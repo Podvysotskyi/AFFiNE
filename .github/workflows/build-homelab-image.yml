@@ -28,6 +28,6 @@ jobs:
     uses: ./.github/workflows/build-images.yml
     secrets: inherit
     with:
-      build-type: homelab
+      build-type: stable
       app-version: ${{ needs.prepare.outputs.app-version }}
       git-short-hash: ${{ needs.prepare.outputs.image-tag }}

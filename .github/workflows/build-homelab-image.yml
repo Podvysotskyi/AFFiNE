@@ -2,9 +2,6 @@ name: Build Homelab Image
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feature/expose-affine-mcp-write-tools
 
 permissions:
   contents: write

@@ -16,10 +16,13 @@ jobs:
       app-version: ${{ steps.meta.outputs.app-version }}
       image-tag: ${{ steps.meta.outputs.image-tag }}
     steps:
+      - uses: actions/checkout@v6
+
       - name: Prepare metadata
         id: meta
         run: |
-          echo "app-version=0.0.0-homelab+${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          version="$(node -p "require('./package.json').version")"
+          echo "app-version=${version}-homelab+${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
           echo "image-tag=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
 
   build-image:

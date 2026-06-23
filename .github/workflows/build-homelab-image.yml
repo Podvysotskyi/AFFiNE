@@ -1,0 +1,36 @@
+name: Build Homelab Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/expose-affine-mcp-write-tools
+
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+
+jobs:
+  prepare:
+    name: Prepare image metadata
+    runs-on: ubuntu-latest
+    outputs:
+      app-version: ${{ steps.meta.outputs.app-version }}
+      image-tag: ${{ steps.meta.outputs.image-tag }}
+    steps:
+      - name: Prepare metadata
+        id: meta
+        run: |
+          echo "app-version=0.0.0-homelab+${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "image-tag=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+  build-image:
+    name: Build and publish GHCR image
+    needs: prepare
+    uses: ./.github/workflows/build-images.yml
+    secrets: inherit
+    with:
+      build-type: homelab
+      app-version: ${{ needs.prepare.outputs.app-version }}
+      git-short-hash: ${{ needs.prepare.outputs.image-tag }}
